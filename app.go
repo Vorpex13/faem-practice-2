@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -23,6 +24,8 @@ type Good struct {
 }
 
 func main() {
+	scanner := bufio.NewScanner(os.Stdin)
+
 	args := os.Args
 	argLength := len(os.Args)
 	config := readConfigs()
@@ -49,14 +52,34 @@ func main() {
 		if strings.Compare(command, "new") == 0 {
 			good := Good{}
 			good.Id = nextID(goods)
+
 			fmt.Print("Название товара: ")
-			_, _ = fmt.Scanf("%s\n", &good.Name)
+			scanner.Scan()
+			good.Name = scanner.Text()
+
 			fmt.Print("Производитель: ")
-			_, _ = fmt.Scanf("%s\n", &good.Producer)
-			fmt.Print("Кол-во товаров: ")
-			_, _ = fmt.Scanf("%d\n", &good.Count)
-			fmt.Print("Цена товара: ")
-			_, _ = fmt.Scanf("%d\n", &good.Price)
+			scanner.Scan()
+			good.Producer = scanner.Text()
+
+			for {
+				fmt.Print("Цена: ")
+				scanner.Scan()
+				num, err := strconv.Atoi(scanner.Text())
+				good.Price = num
+				if err == nil {
+					break
+				}
+			}
+
+			for {
+				fmt.Print("Кол-во товаров: ")
+				scanner.Scan()
+				num, err := strconv.Atoi(scanner.Text())
+				good.Count = num
+				if err == nil {
+					break
+				}
+			}
 
 			goods = append(goods, good)
 			saveGoods(goods, config.DefaultFile)
@@ -64,18 +87,39 @@ func main() {
 		}
 
 		if strings.Compare(command, "edit") == 0 {
+
 			index := findIndexByID(goods, args[2])
 			fmt.Println("Редактировать поле:\n1. Название\n2. Производитель\n3. Цена\n4. Количество")
 			var choose int
 			_, _ = fmt.Scanf("%d\n", &choose)
 			if choose == 1 {
-				_, _ = fmt.Scanf("%s\n", &goods[index].Name)
+				fmt.Print("Название товара: ")
+				scanner.Scan()
+				goods[index].Name = scanner.Text()
 			} else if choose == 2 {
-				_, _ = fmt.Scanf("%s\n", &goods[index].Producer)
+				fmt.Print("Производитель: ")
+				scanner.Scan()
+				goods[index].Producer = scanner.Text()
 			} else if choose == 3 {
-				_, _ = fmt.Scanf("%d\n", &goods[index].Price)
+				for {
+					fmt.Print("Цена: ")
+					scanner.Scan()
+					num, err := strconv.Atoi(scanner.Text())
+					goods[index].Price = num
+					if err == nil {
+						break
+					}
+				}
 			} else if choose == 4 {
-				_, _ = fmt.Scanf("%d\n", &goods[index].Count)
+				for {
+					fmt.Print("Кол-во товаров: ")
+					scanner.Scan()
+					num, err := strconv.Atoi(scanner.Text())
+					goods[index].Count = num
+					if err == nil {
+						break
+					}
+				}
 			}
 			saveGoods(goods, config.DefaultFile)
 		}
