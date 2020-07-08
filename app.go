@@ -11,10 +11,12 @@ import (
 	"strings"
 )
 
+// структура для хранения конфигураций
 type Config struct {
 	DefaultFile string `json:"default_file"`
 }
 
+// структура товара
 type Good struct {
 	Id       int    `json:"id"`
 	Name     string `json:"name"`
@@ -23,9 +25,10 @@ type Good struct {
 	Count    int    `json:"count"`
 }
 
+// точка входа в программу
 func main() {
+	// инициализация основных переменных
 	scanner := bufio.NewScanner(os.Stdin)
-
 	args := os.Args
 	argLength := len(os.Args)
 	config := readConfigs()
@@ -34,6 +37,7 @@ func main() {
 	if argLength > 1 {
 		command := args[1]
 
+		// реализация команды вывода информации по всем товарам
 		if strings.Compare(command, "list") == 0 {
 			fmt.Println("----------------------------------------------------------------------")
 			fmt.Printf("|%-4s|%-20s|%-20s|%-8s|%-12s|\n", " ID", "      Название", "   Производитель", "  Цена", " Количество ")
@@ -44,11 +48,13 @@ func main() {
 			fmt.Println("----------------------------------------------------------------------")
 		}
 
+		// реализация команды установки рабочего файла
 		if strings.Compare(command, "-f") == 0 {
 			config.DefaultFile = args[2]
 			saveConfigs(config)
 		}
 
+		// реализация команды добавления новых данных
 		if strings.Compare(command, "new") == 0 {
 			good := Good{}
 			good.Id = nextID(goods)
@@ -86,6 +92,7 @@ func main() {
 			fmt.Println("appended good: ", good)
 		}
 
+		// реализация команды редактирования
 		if strings.Compare(command, "edit") == 0 {
 
 			index := findIndexByID(goods, args[2])
@@ -124,6 +131,7 @@ func main() {
 			saveGoods(goods, config.DefaultFile)
 		}
 
+		// реализация команды удаления
 		if strings.Compare(command, "del") == 0 {
 			index := findIndexByID(goods, args[2])
 			if index != -1 {
@@ -134,6 +142,7 @@ func main() {
 			}
 		}
 
+		// реализация команда вывода указанного товара
 		if strings.Compare(command, "read") == 0 {
 			index := findIndexByID(goods, args[2])
 			if index != -1 {
@@ -150,6 +159,7 @@ func main() {
 	}
 }
 
+// функция сохранения конфигураций
 func saveConfigs(config *Config) {
 	goodsJson, err := json.Marshal(config)
 	if err != nil {
@@ -162,6 +172,7 @@ func saveConfigs(config *Config) {
 	}
 }
 
+// функция чтения конфигураций
 func readConfigs() *Config {
 	bytes, _ := ioutil.ReadFile("config.json")
 	config := Config{}
@@ -169,6 +180,7 @@ func readConfigs() *Config {
 	return &config
 }
 
+// функция сохранения товаров
 func saveGoods(goods []Good, filename string) {
 	goodsJson, err := json.Marshal(goods)
 	if err != nil {
@@ -181,6 +193,7 @@ func saveGoods(goods []Good, filename string) {
 	}
 }
 
+// функция чтения товаров
 func readGoods(filename string) []Good {
 	bytes, _ := ioutil.ReadFile(filename)
 	var products []Good
@@ -188,6 +201,7 @@ func readGoods(filename string) []Good {
 	return products
 }
 
+// функция генерации нового (следующего) айдишника
 func nextID(goods []Good) int {
 	maxID := -1
 	for i := 0; i < len(goods); i++ {
@@ -199,6 +213,7 @@ func nextID(goods []Good) int {
 	return maxID
 }
 
+// функция, возвращающая индекс товара в массиве по указанному айдишнику
 func findIndexByID(goods []Good, id string) int {
 	id_, _ := strconv.Atoi(id)
 	for i := 0; i < len(goods); i++ {
