@@ -82,10 +82,11 @@ func main() {
 			index := findIndexByID(goods, args[2])
 			if index != -1 {
 				good := goods[index]
-				fmt.Println("Название товара: ", good.Name)
-				fmt.Println("Производитель: ", good.Producer)
-				fmt.Println("Кол-во товаров: ", good.Count)
-				fmt.Println("Цена товара: ", good.Price)
+				fmt.Println("-----------------------------------------------------------------")
+				fmt.Printf("|%-20s|%-20s|%-8s|%-12s|\n", "      Название", "   Производитель", "  Цена", " Количество ")
+				fmt.Println("+--------------------+--------------------+--------+------------+")
+				fmt.Printf("|%-20s|%-20s|%8d|%12d|\n", good.Name, good.Producer, good.Price, good.Count)
+				fmt.Println("-----------------------------------------------------------------")
 			} else {
 				fmt.Println("Неверно указанный ID")
 			}
