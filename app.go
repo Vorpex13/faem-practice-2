@@ -32,7 +32,14 @@ func main() {
 		command := args[1]
 
 		if strings.Compare(command, "list") == 0 {
-			fmt.Println(goods)
+			fmt.Println("-----------------------------------------------------------------")
+			fmt.Printf("|%-20s|%-20s|%-8s|%-12s|\n", "      Название", "   Производитель", "  Цена", " Количество ")
+
+			for i := 0; i < len(goods); i++ {
+				fmt.Println("+--------------------+--------------------+--------+------------+")
+				fmt.Printf("|%-20s|%-20s|%8d|%12d|\n", goods[i].Name, goods[i].Producer, goods[i].Price, goods[i].Count)
+			}
+			fmt.Println("-----------------------------------------------------------------")
 		}
 
 		if strings.Compare(command, "-f") == 0 {
