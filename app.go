@@ -32,14 +32,13 @@ func main() {
 		command := args[1]
 
 		if strings.Compare(command, "list") == 0 {
-			fmt.Println("-----------------------------------------------------------------")
-			fmt.Printf("|%-20s|%-20s|%-8s|%-12s|\n", "      Название", "   Производитель", "  Цена", " Количество ")
-
+			fmt.Println("----------------------------------------------------------------------")
+			fmt.Printf("|%-4s|%-20s|%-20s|%-8s|%-12s|\n", " ID", "      Название", "   Производитель", "  Цена", " Количество ")
 			for i := 0; i < len(goods); i++ {
-				fmt.Println("+--------------------+--------------------+--------+------------+")
-				fmt.Printf("|%-20s|%-20s|%8d|%12d|\n", goods[i].Name, goods[i].Producer, goods[i].Price, goods[i].Count)
+				fmt.Println("+----+--------------------+--------------------+--------+------------+")
+				fmt.Printf("|%-4d|%-20s|%-20s|%8d|%12d|\n", goods[i].Id, goods[i].Name, goods[i].Producer, goods[i].Price, goods[i].Count)
 			}
-			fmt.Println("-----------------------------------------------------------------")
+			fmt.Println("----------------------------------------------------------------------")
 		}
 
 		if strings.Compare(command, "-f") == 0 {
@@ -65,7 +64,20 @@ func main() {
 		}
 
 		if strings.Compare(command, "edit") == 0 {
-			fmt.Println("edit")
+			index := findIndexByID(goods, args[2])
+			fmt.Println("Редактировать поле:\n1. Название\n2. Производитель\n3. Цена\n4. Количество")
+			var choose int
+			_, _ = fmt.Scanf("%d\n", &choose)
+			if choose == 1 {
+				_, _ = fmt.Scanf("%s\n", &goods[index].Name)
+			} else if choose == 2 {
+				_, _ = fmt.Scanf("%s\n", &goods[index].Producer)
+			} else if choose == 3 {
+				_, _ = fmt.Scanf("%d\n", &goods[index].Price)
+			} else if choose == 4 {
+				_, _ = fmt.Scanf("%d\n", &goods[index].Count)
+			}
+			saveGoods(goods, config.DefaultFile)
 		}
 
 		if strings.Compare(command, "del") == 0 {
@@ -82,11 +94,11 @@ func main() {
 			index := findIndexByID(goods, args[2])
 			if index != -1 {
 				good := goods[index]
-				fmt.Println("-----------------------------------------------------------------")
-				fmt.Printf("|%-20s|%-20s|%-8s|%-12s|\n", "      Название", "   Производитель", "  Цена", " Количество ")
-				fmt.Println("+--------------------+--------------------+--------+------------+")
-				fmt.Printf("|%-20s|%-20s|%8d|%12d|\n", good.Name, good.Producer, good.Price, good.Count)
-				fmt.Println("-----------------------------------------------------------------")
+				fmt.Println("----------------------------------------------------------------------")
+				fmt.Printf("|%-4s|%-20s|%-20s|%-8s|%-12s|\n", " ID", "      Название", "   Производитель", "  Цена", " Количество ")
+				fmt.Println("----------------------------------------------------------------------")
+				fmt.Printf("|%-4d|%-20s|%-20s|%8d|%12d|\n", good.Id, good.Name, good.Producer, good.Price, good.Count)
+				fmt.Println("----------------------------------------------------------------------")
 			} else {
 				fmt.Println("Неверно указанный ID")
 			}
